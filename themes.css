@@ -1,0 +1,27 @@
+body {
+    font-family: Segoe UI;
+    font-size: 16px;
+    background-color: #262E3D;
+    color: #f0f0f0;
+}
+
+textarea {
+    border: 1px solid #1C90F3;
+    background-color: rgba(0, 0, 0, 0);
+    color: inherit;
+    margin-top: 5px;
+    font-family: inherit;
+    font-size: inherit;
+    resize: vertical;
+}
+
+button {
+    background-color: #1C90F3;
+    border: none;
+    color: #F0F0F0;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-family: inherit;
+    font-size: inherit;
+    width: 100%;
+}
