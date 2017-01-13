@@ -1,6 +1,7 @@
 Decimal.config({
     precision: 17
 });
+var manualInput = 0; //where to load data: 0 = from save game; 1 = manual input
 var rawData = "";
 var totalAS;
 var hze;
@@ -11,11 +12,6 @@ var basePrimalRewards;
 var totalBoss;
 var hsCap;
 var outsider = {
-    "1": {
-        "name": "Xyliqil",
-        "level": Decimal(0),
-        "multiplier": Decimal(0),
-    },
     "2": {
         "name": "Chor'gorloth",
         "level": Decimal(0),
@@ -187,13 +183,9 @@ function loadGame() {
     var output = "";
     totalAS = Decimal(rawData.ancientSoulsTotal);
     output += "Total AS: " + totalAS + "<br>";
-    for (var i = 1; i <= 5; i++) {
+    for (var i = 2; i <= 5; i++) {
         outsider[i].level = Decimal(rawData.outsiders.outsiders[i].level);
         switch (i) {
-            case 1:
-                outsider[i].multiplier = outsider[i].level;
-                output += outsider[i].name + ": " + outsider[i].level + " (+" + outsider[i].multiplier.times(100).toFixed(0) + "%)<br>";
-                break;
             case 2:
                 outsider[i].multiplier = Decimal(1).minus(Decimal.pow(0.95, outsider[i].level)).neg();
                 output += outsider[i].name + ": " + outsider[i].level + " (" + outsider[i].multiplier.times(100).toFixed(2) + "%)<br>";
@@ -232,6 +224,52 @@ function loadGame() {
     $("#result1").html(output);
 }
 
+function loadManualInput() {
+    getSaveGame();
+    var output = "";
+    totalAS = Decimal($("#miTotalAS").val());
+    output += "Total AS: " + totalAS + "<br>";
+    for (var i = 2; i <= 5; i++) {
+        outsider[i].level = Decimal($("#miOsd"+i.toString()).val());
+        switch (i) {
+            case 2:
+                outsider[i].multiplier = Decimal(1).minus(Decimal.pow(0.95, outsider[i].level)).neg();
+                output += outsider[i].name + ": " + outsider[i].level + " (" + outsider[i].multiplier.times(100).toFixed(2) + "%)<br>";
+                break;
+            case 3:
+                outsider[i].multiplier = Decimal(50).minus(outsider[i].level.neg().div(1000).exp().times(50));
+                output += outsider[i].name + ": " + outsider[i].level + " (+" + outsider[i].multiplier.toFixed(2) + "%)<br>";
+                break;
+            case 4:
+                outsider[i].multiplier = outsider[i].level.div(10);
+                output += outsider[i].name + ": " + outsider[i].level + " (+" + outsider[i].multiplier.times(100).toFixed(0) + "%)<br>";
+                break;
+            case 5:
+                outsider[i].multiplier = outsider[i].level;
+                output += outsider[i].name + ": " + outsider[i].level + " (+" + outsider[i].multiplier.times(100).toFixed(0) + "%)<br>";
+                break;
+        }
+    }
+    hs = Decimal($("#miCurrentHS").val());
+    for (var i in ancient) {
+        ancient[i].level = Decimal($("#miAcn"+i.toString()).val());
+        ancient[i].bonusFromRelics = Decimal($("#miAcn"+i.toString()+"Relics").val());
+    }
+    output += "Hero Souls: " + integerFormat(hs) + "<br>";
+    output += "Atman: " + integerFormat(ancient[13].level) + " + " + decimalFormat(ancient[13].bonusFromRelics) + "<br>";
+    output += "Solomon: " + integerFormat(ancient[3].level) + " + " + decimalFormat(ancient[3].bonusFromRelics) + "<br>";
+    hsSacrificed = Decimal($("#miSacrificedHS").val());
+    hze = Decimal($("#miHZE").val());
+    output += "HS sacrificed: " + integerFormat(hsSacrificed) + "<br>";
+    tp = Decimal(50).minus(totalAS.div(10000).neg().exp().times(49)).plus(outsider[3].multiplier).div(100);
+    totalBoss = hze.minus(100).div(5).floor();
+    hsCap = hsSacrificed.div(20).times(outsider[4].multiplier.plus(1));
+    basePrimalRewards = getBasePrimalRewards(totalBoss);
+    var qa = getQA(ancient[3].level.plus(ancient[3].bonusFromRelics), ancient[13].level.plus(ancient[13].bonusFromRelics));
+    output += "QA: " + integerFormat(qa);
+    $("#result1").html(output);
+}
+
 //maximize QA by leveling Atman and Solomon
 function optimizeQA() {
     var bestAtman = ancient[13].level;
@@ -257,8 +295,20 @@ function optimizeQA() {
 }
 
 $(document).ready(function() {
-    $("#buttonLoad").click(function() {
-        loadGame();
+    $("#buttonSwitch").click(function() {
+		manualInput=(manualInput+1)%2;
+		$("#inputMode"+manualInput.toString()).show();
+		$("#inputMode"+(1-manualInput).toString()).hide();
+		if (manualInput==1)
+			$(this).html('USE SAVE GAME');
+		else
+			$(this).html('MANUAL INPUT');
+	});
+	$("#buttonLoad").click(function() {
+        if (manualInput==0)
+			loadGame();
+		else
+			loadManualInput();
         optimizeQA();
     });
 });

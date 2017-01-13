@@ -15,6 +15,16 @@ textarea {
     resize: vertical;
 }
 
+input {
+	border: 1px solid #1C90F3;
+	background-color: rgba(0, 0, 0, 0);
+    color: inherit;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	font-family: inherit;
+    font-size: inherit;
+}
+
 button {
     background-color: #1C90F3;
     border: none;
@@ -23,5 +33,5 @@ button {
     padding-bottom: 3px;
     font-family: inherit;
     font-size: inherit;
-    width: 100%;
+    width: 268px;
 }

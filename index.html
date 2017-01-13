@@ -12,12 +12,29 @@
 </head>
 
 <body>
-    <div style="width: 268px; text-align: center;">
-        <h1>QA CALCULATOR</h1>
-        <textarea style="width: 262px;" id="ipSaveGame" placeholder="Save Game" onclick="this.select();"></textarea>
-        <br>
-        <button id="buttonLoad">LOAD AND CALCULATE</button>
-    </div>
+	<h1>QA CALCULATOR</h1>    
+	<button id="buttonSwitch">MANUAL INPUT</button>
+	<div id="inputMode0">
+		<textarea style="width: 262px;" id="ipSaveGame" placeholder="Save Game" onclick="this.select();"></textarea>
+	</div>
+	<div id="inputMode1" style="display: none;">
+		<input id="miTotalAS" placeholder="Total Ancient Souls" type="text"/>
+		<br>
+		<input id="miOsd2" placeholder="Chor'gorloth" type="text"/>
+		<input id="miOsd3" placeholder="Phandoryss" type="text"/>
+		<input id="miOsd4" placeholder="Borb" type="text"/>
+		<input id="miOsd5" placeholder="Ponyboy" type="text"/>
+		<br>
+		<input id="miAcn13" placeholder="Atman" type="text"/>
+		<input id="miAcn13Relics" placeholder="Total Atman bonuses from relics" type="text"/>
+		<input id="miAcn3" placeholder="Solomon" type="text"/>
+		<input id="miAcn3Relics" placeholder="Total Solomon bonuses from relics" type="text"/>
+		<br>
+		<input id="miHZE" placeholder="Highest Zone This Transcension" type="text"/>
+		<input id="miCurrentHS" placeholder="Current HS" type="text"/>
+		<input id="miSacrificedHS" placeholder="Sacrificed HS" type="text"/>
+	</div>
+	<button id="buttonLoad">LOAD AND CALCULATE</button>
     <p id="result1"></p>
     <p id="result2"></p>
     <p id="result3"></p>
