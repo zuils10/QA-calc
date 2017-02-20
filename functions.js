@@ -205,6 +205,8 @@ function loadGame() {
         }
     }
     hs = Decimal(rawData.heroSouls);
+    if ($("#useNextAscensionSouls").prop("checked"))
+        hs = hs.plus(Decimal(rawData.primalSouls));
     for (var i in ancient) {
         ancient[i].level = Decimal(rawData.ancients.ancients[i].level).round();
         ancient[i].bonusFromRelics = getRelicBonus(ancient[i].relicid);
