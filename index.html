@@ -4,39 +4,90 @@
     <meta charset="UTF-8">
     <title>QA calculator</title>
     <!--Themes-->
-    <link id="themeLink" rel="stylesheet" href="themes.css" type="text/css"/>
     <link rel="icon" href="favicon.png" type="image/png">
+    <!-- Latest compiled and minified CSS -->
+    <link id="style" rel="stylesheet" href="https://bootswatch.com/darkly/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!--Scripts-->
     <script type="text/javascript" src="https://cdn.rawgit.com/MikeMcl/decimal.js/master/decimal.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script type="text/javascript" src="functions.js"></script>
 </head>
-
 <body>
-	<h1>QA CALCULATOR</h1>    
-	<button id="buttonSwitch">MANUAL INPUT</button>
-	<div id="inputMode0">
-		<textarea style="width: 262px;" id="ipSaveGame" placeholder="Save Game" onclick="this.select();"></textarea>
+	<div class="page-header col-lg-12">
+		<h1 class="text-center">QA CALCULATOR</h1>
 	</div>
-	<div id="inputMode1" style="display: none;">
-		<input id="miTotalAS" placeholder="Total Ancient Souls" type="text"/>
-		<br>
-		<input id="miOsd2" placeholder="Chor'gorloth" type="text"/>
-		<input id="miOsd3" placeholder="Phandoryss" type="text"/>
-		<input id="miOsd4" placeholder="Borb" type="text"/>
-		<input id="miOsd5" placeholder="Ponyboy" type="text"/>
-		<br>
-		<input id="miAcn13" placeholder="Atman" type="text"/>
-		<input id="miAcn13Relics" placeholder="Total Atman bonuses from relics" type="text"/>
-		<input id="miAcn3" placeholder="Solomon" type="text"/>
-		<input id="miAcn3Relics" placeholder="Total Solomon bonuses from relics" type="text"/>
-		<br>
-		<input id="miHZE" placeholder="Highest Zone This Transcension" type="text"/>
-		<input id="miCurrentHS" placeholder="Current HS" type="text"/>
-		<input id="miSacrificedHS" placeholder="Sacrificed HS" type="text"/>
+	<div class="col-lg-1"></div>
+	<div class="col-lg-10">
+		<div class="row">
+			<div class="col-lg-2 text-center">
+				<button class="center btn btn-primary" id="buttonSwitch">MANUAL INPUT</button>
+			</div>
+			<div class="col-lg-8" id="inputMode0">
+				<textarea class="form-control" id="ipSaveGame" placeholder="Save Game" onclick="this.select();"></textarea>
+			</div>
+			<div class="col-lg-8" id="inputMode1" style="display: none;">
+				<div class="col-lg-3">
+					<input class="form-control" id="miTotalAS" placeholder="Total Ancient Souls" type="text"/>
+				</div>
+				<div class="clearfix"></div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miOsd2" placeholder="Chor'gorloth" type="text"/>
+				</div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miOsd3" placeholder="Phandoryss" type="text"/>
+				</div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miOsd4" placeholder="Borb" type="text"/>
+				</div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miOsd5" placeholder="Ponyboy" type="text"/>
+				</div>
+				<div class="clearfix"></div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miAcn13" placeholder="Atman" type="text"/>
+				</div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miAcn13Relics" placeholder="Total Atman bonuses from relics" type="text"/>
+				</div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miAcn3" placeholder="Solomon" type="text"/>
+				</div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miAcn3Relics" placeholder="Total Solomon bonuses from relics" type="text"/>
+				</div>
+				<div class="clearfix"></div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miHZE" placeholder="Highest Zone This Transcension" type="text"/>
+				</div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miCurrentHS" placeholder="Current HS" type="text"/>
+				</div>
+				<div class="col-lg-3">
+					<input class="form-control" id="miSacrificedHS" placeholder="Sacrificed HS" type="text"/>
+				</div>
+			</div>
+			<div class="col-lg-2text-center">
+				<button class="center btn btn-warning" id="buttonLoad">LOAD AND CALCULATE</button>
+			</div>
+		</div>
 	</div>
-	<button id="buttonLoad">LOAD AND CALCULATE</button>
-    <p id="result1"></p>
-    <p id="result2"></p>
-    <p id="result3"></p>
+	<div class="col-lg-1"></div>
+
+	<div class="clearfix"></div>
+
+	<div class="col-lg-1"></div>
+	<div class="col-lg-10">
+		<div class="col-lg-2"></div>
+		<div class="col-lg-8">
+			<p class="text-primary" id="result1"></p>
+		    <p class="text-success" id="result2"></p>
+		    <p class="text-warning" id="result3"></p>
+		</div>
+		<div class="col-lg-2"></div>
+	</div>
+	<div class="col-lg-1"></div>
 </body>
