@@ -143,7 +143,7 @@ function getBasePrimalRewards(param1) {
 }
 
 function getQA(solomonLevel, atmanLevel) {
-    var bossUnderCap = Decimal.min(totalBoss, Decimal.log(hsCap.div(20).div(getSolomonEffect(solomonLevel).plus(1))).div(Decimal.log(tp.plus(1))).ceil().plus(20));
+    var bossUnderCap = Decimal.min(totalBoss, Decimal.log(hsCap.div(20).div(getSolomonEffect(solomonLevel).plus(1))).div(Decimal.log(tp.plus(1))).ceil());
     var bossOverCap = totalBoss.minus(bossUnderCap);
     var baseTPRewards = Decimal(20).times(tp.plus(1).pow(bossUnderCap.plus(1)).minus(1).div(tp));
     var qa = baseTPRewards.plus(basePrimalRewards).times(getSolomonEffect(solomonLevel).plus(1)).plus(hsCap.times(bossOverCap)).times(getPrimalChance(atmanLevel));
