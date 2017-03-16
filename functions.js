@@ -47,6 +47,7 @@ var ancient = {
         "bonusFromRelics": Decimal(0),
     },
 }
+var quest = [];
 
 //FORMATS
 function integerFormat(number) {
@@ -217,12 +218,33 @@ function loadGame() {
     hsSacrificed = Decimal(rawData.heroSoulsSacrificed);
     hze = Decimal(rawData.highestFinishedZonePersist);
     output += "HS sacrificed: " + integerFormat(hsSacrificed) + "<br>";
+    
+    //get HS quests
+    quest = [];
+    var mercs = rawData.mercenaries.mercenaries;
+    var rarityMult = [, 0.5, 0.75, 1, 2, 5, 20, 50, 200];
+    var currentTime = new Date().getTime();
+    for (var i in mercs) {
+        if ((mercs[i].lastQuestRewardType == 3) && (Number(mercs[i].lastQuestStartTime) + Number(mercs[i].lastQuestDuration)*1000 <= currentTime)) {
+            var reward = Decimal(mercs[i].lastQuestRewardQty * mercs[i].level);
+            if (mercs[i].statId == 2)
+                reward = reward.times(1 + 0.1 * rarityMult[mercs[i].rarity]);
+            reward = reward.times(100).toDP(2).div(100);
+            quest.push(reward);
+        }
+    }
+    quest.sort(function(a,b) {
+        return a.gte(b);
+    });
+    
     tp = Decimal(50).minus(totalAS.div(10000).neg().exp().times(49)).plus(outsider[3].multiplier).div(100);
     totalBoss = hze.minus(100).div(5).floor();
     hsCap = hsSacrificed.div(20).times(outsider[4].multiplier.plus(1));
     basePrimalRewards = getBasePrimalRewards(totalBoss);
     var qa = getQA(ancient[3].level.plus(ancient[3].bonusFromRelics), ancient[13].level.plus(ancient[13].bonusFromRelics));
-    output += "QA: " + integerFormat(qa);
+    output += "QA: " + integerFormat(qa) +"<br>";
+    output += "Available Quests: " + quest.join(', ');
+    
     $("#result1").html(output);
 }
 
@@ -264,27 +286,43 @@ function loadManualInput() {
     hze = Decimal($("#miHZE").val());
     output += "HS sacrificed: " + integerFormat(hsSacrificed) + "<br>";
     tp = Decimal(50).minus(totalAS.div(10000).neg().exp().times(49)).plus(outsider[3].multiplier).div(100);
+
+    //get HS quests
+    quest = [];
+    for (var i=0; i<5; i++) {
+        var temp = $("#miQuest_" + i).val();
+        if ($.isNumeric(temp)) {
+            temp=Decimal(temp).div(100);
+            quest.push(temp);
+        }
+    }
+    quest.sort(function(a,b) {
+        return a.gte(b);
+    });
+
     totalBoss = hze.minus(100).div(5).floor();
     hsCap = hsSacrificed.div(20).times(outsider[4].multiplier.plus(1));
     basePrimalRewards = getBasePrimalRewards(totalBoss);
     var qa = getQA(ancient[3].level.plus(ancient[3].bonusFromRelics), ancient[13].level.plus(ancient[13].bonusFromRelics));
-    output += "QA: " + integerFormat(qa);
+    output += "QA: " + integerFormat(qa) + "<br>";
+    output += "Available Quests: " + quest.join(', ');
+
     $("#result1").html(output);
 }
 
 //maximize QA by leveling Atman and Solomon
-function optimizeQA() {
-    var bestAtman = ancient[13].level;
-    var bestSolomon = ancient[3].level;
-    var bestQA = getQA(ancient[3].level.plus(ancient[3].bonusFromRelics), ancient[13].level.plus(ancient[13].bonusFromRelics));
-    var output1 = "Tests:<br>";
-    var highestAtman = getHighestAtman(ancient[13].level, hs);
-    for (var i = highestAtman; i.gte(ancient[13].level); i = i.minus(1)) {
+function optimizeQA(atman, solomon, hs) {
+    var output1 = "";
+    var bestAtman = atman;
+    var bestSolomon = solomon;
+    var bestQA = getQA(solomon.plus(ancient[3].bonusFromRelics), atman.plus(ancient[13].bonusFromRelics));
+    var highestAtman = getHighestAtman(atman, hs);
+    for (var i = highestAtman; i.gte(atman); i = i.minus(1)) {
         var newAtman = i;
-        var costAtman = Decimal.pow(2, newAtman.plus(1)).minus(Decimal.pow(2, ancient[13].level.plus(1))).times(Decimal(1).plus(outsider[2].multiplier)).ceil();
-        var newSolomon = getNewSolomon(ancient[3].level, hs.minus(costAtman));
+        var costAtman = Decimal.pow(2, newAtman.plus(1)).minus(Decimal.pow(2, atman.plus(1))).times(Decimal(1).plus(outsider[2].multiplier)).ceil();
+        var newSolomon = getNewSolomon(solomon, hs.minus(costAtman));
         var newQA = getQA(newSolomon.plus(ancient[3].bonusFromRelics), newAtman.plus(ancient[13].bonusFromRelics));
-        output1 += "Atman: " + newAtman + " (+" + newAtman.minus(ancient[13].level) + "), Solomon: " + integerFormat(newSolomon) + " (+" + newSolomon.minus(ancient[3].level) + "), QA: " + integerFormat(newQA) + "<br>";
+        output1 += "Atman: " + newAtman + " (+" + newAtman.minus(atman) + "), Solomon: " + integerFormat(newSolomon) + " (+" + newSolomon.minus(solomon) + "), QA: " + integerFormat(newQA) + "<br>";
         if (newQA.gt(bestQA)) {
             bestAtman = newAtman;
             bestSolomon = newSolomon;
@@ -292,11 +330,14 @@ function optimizeQA() {
         } else
             break;
     }
-    $("#result2").html("Best result:<br>Atman: " + bestAtman + " (+" + bestAtman.minus(ancient[13].level) + "), Solomon: " + integerFormat(bestSolomon) + " (+" + easyCopyFormat(bestSolomon.minus(ancient[3].level)) + "), QA: " + integerFormat(bestQA));
-    $("#result3").html(output1);
+    $("#result2").append("Atman: " + bestAtman + " (+" + bestAtman.minus(atman) + "), Solomon: " + integerFormat(bestSolomon) + " (+" + easyCopyFormat(bestSolomon.minus(solomon)) + "), QA: " + integerFormat(bestQA) + "<br>");
+    $("#result3").append(output1 + "<br>");
+    var output = [bestAtman, bestSolomon, bestQA];
+    return output;
 }
 
 $(document).ready(function() {
+    
     $("#buttonSwitch").click(function() {
 		manualInput=(manualInput+1)%2;
 		$("#inputMode"+manualInput.toString()).show();
@@ -311,6 +352,18 @@ $(document).ready(function() {
 			loadGame();
 		else
 			loadManualInput();
-        optimizeQA();
+        $("#result2").empty();
+        $("#result3").empty();
+        var input = [ancient[13].level, ancient[3].level, 0];
+        var input_hs = hs;
+        for (var i=0; i<=quest.length; i++) {
+            $("#result2").append("<b>Quick Ascension #" + (1+i) + " (HS: " + integerFormat(input_hs) + "):</b><br>");
+            $("#result3").append("<b>Tests of Quick Ascension #" + (1+i) + ":</b><br>");
+            input = optimizeQA(input[0], input[1], input_hs);
+            if (i<quest.length)
+                input_hs = input[2].times(quest[i]);
+            else
+                break;
+        }
     });
 });
