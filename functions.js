@@ -176,7 +176,7 @@ function getHighestAtman(currentAtmanLevel, hsForAtman) {
         else
             right = mid;
     }
-    return left;
+    return Decimal.min(left, 2880);
 }
 //load and show game data
 function loadGame() {
