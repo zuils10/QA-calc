@@ -14,7 +14,7 @@
     		padding-left: 15px;
   			padding-right: 15px;
     	}
-    	input {
+    	.manual {
 			padding-top: 5px !important;
 			padding-bottom: 5px !important;
 			height: 27px !important;
@@ -47,77 +47,83 @@
 	<div class="col-lg-1"></div>
 	<div class="col-lg-10">
 		<div class="row">
-			<div class="col-lg-2 text-right">
-				<button class="center btn btn-primary" id="buttonSwitch">MANUAL INPUT</button>
+			<div class="col-lg-2">
+				<select class="form-control btn-primary" id="slInputType">
+					<option value="0" selected>Paste from clipboard</option>
+					<option value="1">Load from file</option>
+					<option value="2">Manual input</option>
+				</select>
 			</div>
 			<div class="col-lg-8" id="inputMode0">
-				<textarea class="form-control" id="ipSaveGame" placeholder="Save Game" onclick="this.select();"></textarea>
+				<input class="form-control" type="text" id="textSaveGame" placeholder="Paste save game here" onclick="this.select();"/>
 			</div>
 			<div class="col-lg-8" id="inputMode1" style="display: none;">
+				<label class="form-control btn btn-info">
+	                Browse the file... <input class="hidden" type="file" id="fileSaveGame"/>
+	            </label>
+			</div>
+			<div class="col-lg-8" id="inputMode2" style="display: none;">
 				<div class="col-lg-3">
-					<input class="form-control" id="miTotalAS" placeholder="Total Ancient Souls" type="text"/>
+					<input class="form-control manual" id="miTotalAS" placeholder="Total Ancient Souls" type="text"/>
 				</div>
 				<div class="clearfix"></div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miOsd2" placeholder="Chor'gorloth" type="text"/>
+					<input class="form-control manual" id="miOsd2" placeholder="Chor'gorloth" type="text"/>
 				</div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miOsd3" placeholder="Phandoryss" type="text"/>
+					<input class="form-control manual" id="miOsd3" placeholder="Phandoryss" type="text"/>
 				</div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miOsd4" placeholder="Borb" type="text"/>
+					<input class="form-control manual" id="miOsd4" placeholder="Borb" type="text"/>
 				</div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miOsd5" placeholder="Ponyboy" type="text"/>
+					<input class="form-control manual" id="miOsd5" placeholder="Ponyboy" type="text"/>
 				</div>
 				<div class="clearfix"></div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miAcn13" placeholder="Atman" type="text"/>
+					<input class="form-control manual" id="miAcn13" placeholder="Atman" type="text"/>
 				</div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miAcn13Relics" placeholder="Total Atman bonuses from relics" type="text"/>
+					<input class="form-control manual" id="miAcn13Relics" placeholder="Total Atman bonuses from relics" type="text"/>
 				</div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miAcn3" placeholder="Solomon" type="text"/>
+					<input class="form-control manual" id="miAcn3" placeholder="Solomon" type="text"/>
 				</div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miAcn3Relics" placeholder="Total Solomon bonuses from relics" type="text"/>
+					<input class="form-control manual" id="miAcn3Relics" placeholder="Total Solomon bonuses from relics" type="text"/>
 				</div>
 				<div class="clearfix"></div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miHZE" placeholder="Highest Zone This Transcension" type="text"/>
+					<input class="form-control manual" id="miHZE" placeholder="Highest Zone This Transcension" type="text"/>
 				</div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miCurrentHS" placeholder="Current HS" type="text"/>
+					<input class="form-control manual" id="miCurrentHS" placeholder="Current HS" type="text"/>
 				</div>
 				<div class="col-lg-3">
-					<input class="form-control" id="miSacrificedHS" placeholder="Sacrificed HS" type="text"/>
+					<input class="form-control manual" id="miSacrificedHS" placeholder="Sacrificed HS" type="text"/>
 				</div>
 				<div class="clearfix"></div>
 				<div class="col-lg-2.4">
-					<input class="form-control" id="miQuest_0" placeholder="HS Quest (%)" type="text"/>
+					<input class="form-control manual" id="miQuest_0" placeholder="HS Quest (%)" type="text"/>
 				</div>
 				<div class="col-lg-2.4">
-					<input class="form-control" id="miQuest_1" placeholder="HS Quest (%)" type="text"/>
+					<input class="form-control manual" id="miQuest_1" placeholder="HS Quest (%)" type="text"/>
 				</div>
 				<div class="col-lg-2.4">
-					<input class="form-control" id="miQuest_2" placeholder="HS Quest (%)" type="text"/>
+					<input class="form-control manual" id="miQuest_2" placeholder="HS Quest (%)" type="text"/>
 				</div>
 				<div class="col-lg-2.4">
-					<input class="form-control" id="miQuest_3" placeholder="HS Quest (%)" type="text"/>
+					<input class="form-control manual" id="miQuest_3" placeholder="HS Quest (%)" type="text"/>
 				</div>
 				<div class="col-lg-2.4">
-					<input class="form-control" id="miQuest_4" placeholder="HS Quest (%)" type="text"/>
+					<input class="form-control manual" id="miQuest_4" placeholder="HS Quest (%)" type="text"/>
 				</div>
 			</div>
 			<div class="col-lg-2 text-left">
 				<button class="center btn btn-warning" id="buttonLoad">LOAD AND CALCULATE</button>
 			</div>
 		</div>
-		<div class="text-center" id="questContainer">
-		</div>
 	</div>
-	<div class="col-lg-1"></div>
 
 	<div class="clearfix"></div>
 
@@ -132,5 +138,4 @@
 		</div>
 		<div class="col-lg-2"></div>
 	</div>
-	<div class="col-lg-1"></div>
 </body>

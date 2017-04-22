@@ -1,7 +1,6 @@
 Decimal.config({
     precision: 17
 });
-var manualInput = 0; //where to load data: 0 = from save game; 1 = manual input
 var rawData = "";
 var totalAS;
 var hze;
@@ -90,9 +89,9 @@ function approSum(n) {
 }
 
 //SUPPORT
-function getSaveGame() {
+function _decodeSaveGame(sg) {
     var SPLITTER = "Fe12NAfA3R6z4k0z";
-    var ipData = $("#ipSaveGame").val();
+    var ipData = sg;
     if (ipData.indexOf(SPLITTER) > 0) {
         ipData = ipData.split(SPLITTER)[0];
         var temp = "";
@@ -178,9 +177,8 @@ function getHighestAtman(currentAtmanLevel, hsForAtman) {
     }
     return Decimal.min(left, 2880);
 }
-//load and show game data
-function loadGame() {
-    getSaveGame();
+//Extract and show game data
+function extractAndShowData() {
     var output = "";
     totalAS = Decimal(rawData.ancientSoulsTotal);
     output += "Total AS: " + totalAS + "<br>";
@@ -248,8 +246,40 @@ function loadGame() {
     $("#result1").html(output);
 }
 
-function loadManualInput() {
-    getSaveGame();
+function showResultsAndTests() {
+    $("#result2").empty();
+    $("#result3").empty();
+    var input = [ancient[13].level, ancient[3].level, 0];
+    var input_hs = hs;
+    for (var i=0; i<=quest.length; i++) {
+        $("#result2").append("<b>Quick Ascension #" + (1+i) + " (HS: " + integerFormat(input_hs) + "):</b><br>");
+        $("#result3").append("<b>Tests of Quick Ascension #" + (1+i) + ":</b><br>");
+        input = optimizeQA(input[0], input[1], input_hs);
+        if (i<quest.length)
+            input_hs = input[2].times(quest[i]);
+        else
+            break;
+    }
+}
+
+function loadGame_0() {
+    var sg = $("#textSaveGame").val();
+    _decodeSaveGame(sg);
+    extractAndShowData();
+    showResultsAndTests();
+}
+
+function loadGame_1() {
+    var fr = new FileReader();
+    fr.onload = function() {
+        _decodeSaveGame(fr.result);
+        extractAndShowData();
+        showResultsAndTests();
+    };
+    fr.readAsText($("#fileSaveGame").prop("files")[0]);
+}
+
+function loadGame_2() {
     var output = "";
     totalAS = Decimal($("#miTotalAS").val());
     output += "Total AS: " + totalAS + "<br>";
@@ -308,6 +338,7 @@ function loadManualInput() {
     output += "Available Quests: " + quest.join(', ');
 
     $("#result1").html(output);
+    showResultsAndTests();
 }
 
 //maximize QA by leveling Atman and Solomon
@@ -336,34 +367,26 @@ function optimizeQA(atman, solomon, hs) {
     return output;
 }
 
+
 $(document).ready(function() {
-    
-    $("#buttonSwitch").click(function() {
-		manualInput=(manualInput+1)%2;
-		$("#inputMode"+manualInput.toString()).show();
-		$("#inputMode"+(1-manualInput).toString()).hide();
-		if (manualInput==1)
-			$(this).html('USE SAVE GAME');
-		else
-			$(this).html('MANUAL INPUT');
-	});
-	$("#buttonLoad").click(function() {
-        if (manualInput==0)
-			loadGame();
-		else
-			loadManualInput();
-        $("#result2").empty();
-        $("#result3").empty();
-        var input = [ancient[13].level, ancient[3].level, 0];
-        var input_hs = hs;
-        for (var i=0; i<=quest.length; i++) {
-            $("#result2").append("<b>Quick Ascension #" + (1+i) + " (HS: " + integerFormat(input_hs) + "):</b><br>");
-            $("#result3").append("<b>Tests of Quick Ascension #" + (1+i) + ":</b><br>");
-            input = optimizeQA(input[0], input[1], input_hs);
-            if (i<quest.length)
-                input_hs = input[2].times(quest[i]);
+    $("#slInputType").on('change', function() {
+		var inputType = $(this).val();
+		for (var i = 0; i < 3; i++)
+            if (i == inputType)
+                $("#inputMode"+i.toString()).show();
             else
+                $("#inputMode"+i.toString()).hide();
+	});
+	$("#buttonLoad").on('click', function() {
+        switch (parseInt($("#slInputType").val())) {
+            case 0:
+                loadGame_0();
                 break;
+            case 1:
+                loadGame_1();
+                break;
+            case 2:
+                loadGame_2();
         }
     });
 });
