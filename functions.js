@@ -367,7 +367,6 @@ function optimizeQA(atman, solomon, hs) {
     return output;
 }
 
-
 $(document).ready(function() {
     $("#slInputType").on('change', function() {
 		var inputType = $(this).val();
@@ -389,4 +388,5 @@ $(document).ready(function() {
                 loadGame_2();
         }
     });
+    $('[data-toggle="tooltip"]').tooltip();
 });
