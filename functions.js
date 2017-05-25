@@ -348,18 +348,24 @@ function optimizeQA(atman, solomon, hs) {
     var bestSolomon = solomon;
     var bestQA = getQA(solomon.plus(ancient[3].bonusFromRelics), atman.plus(ancient[13].bonusFromRelics));
     var highestAtman = getHighestAtman(atman, hs);
-    for (var i = highestAtman; i.gte(atman); i = i.minus(1)) {
-        var newAtman = i;
-        var costAtman = Decimal.pow(2, newAtman.plus(1)).minus(Decimal.pow(2, atman.plus(1))).times(Decimal(1).plus(outsider[2].multiplier)).ceil();
-        var newSolomon = getNewSolomon(solomon, hs.minus(costAtman));
-        var newQA = getQA(newSolomon.plus(ancient[3].bonusFromRelics), newAtman.plus(ancient[13].bonusFromRelics));
-        output1 += "Atman: " + newAtman + " (+" + newAtman.minus(atman) + "), Solomon: " + integerFormat(newSolomon) + " (+" + newSolomon.minus(solomon) + "), QA: " + integerFormat(newQA) + "<br>";
-        if (newQA.gt(bestQA)) {
-            bestAtman = newAtman;
-            bestSolomon = newSolomon;
-            bestQA = newQA;
-        } else
-            break;
+    if (atman.gte(2880)) {
+        bestSolomon = getNewSolomon(solomon, hs);
+        bestQA = getQA(bestSolomon.plus(ancient[3].bonusFromRelics), bestAtman.plus(ancient[13].bonusFromRelics));
+    }
+    else {
+        for (var i = highestAtman; i.gte(atman); i = i.minus(1)) {
+            var newAtman = i;
+            var costAtman = Decimal.pow(2, newAtman.plus(1)).minus(Decimal.pow(2, atman.plus(1))).times(Decimal(1).plus(outsider[2].multiplier)).ceil();
+            var newSolomon = getNewSolomon(solomon, hs.minus(costAtman));
+            var newQA = getQA(newSolomon.plus(ancient[3].bonusFromRelics), newAtman.plus(ancient[13].bonusFromRelics));
+            output1 += "Atman: " + newAtman + " (+" + newAtman.minus(atman) + "), Solomon: " + integerFormat(newSolomon) + " (+" + newSolomon.minus(solomon) + "), QA: " + integerFormat(newQA) + "<br>";
+            if (newQA.gt(bestQA)) {
+                bestAtman = newAtman;
+                bestSolomon = newSolomon;
+                bestQA = newQA;
+            } else
+                break;
+        }
     }
     $("#result2").append("Atman: " + bestAtman + " (+" + bestAtman.minus(atman) + "), Solomon: " + integerFormat(bestSolomon) + " (+" + easyCopyFormat(bestSolomon.minus(solomon)) + "), QA: " + integerFormat(bestQA) + "<br>");
     $("#result3").append(output1 + "<br>");
