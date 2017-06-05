@@ -216,14 +216,14 @@ function extractAndShowData() {
     hsSacrificed = Decimal(rawData.heroSoulsSacrificed);
     hze = Decimal(rawData.highestFinishedZonePersist);
     output += "HS sacrificed: " + integerFormat(hsSacrificed) + "<br>";
-    
+
     //get HS quests
     quest = [];
     var mercs = rawData.mercenaries.mercenaries;
     var rarityMult = [, 0.5, 0.75, 1, 2, 5, 20, 50, 200];
     var currentTime = new Date().getTime();
     for (var i in mercs) {
-        if ((mercs[i].lastQuestRewardType == 3) && (Number(mercs[i].lastQuestStartTime) + Number(mercs[i].lastQuestDuration)*1000 <= currentTime)) {
+        if ((mercs[i].lastQuestRewardType == 3) && (Number(mercs[i].lastQuestStartTime) + Number(mercs[i].lastQuestDuration) * 1000 <= currentTime)) {
             var reward = Decimal(mercs[i].lastQuestRewardQty * mercs[i].level);
             if (mercs[i].statId == 2)
                 reward = reward.times(1 + 0.1 * rarityMult[mercs[i].rarity]);
@@ -231,18 +231,18 @@ function extractAndShowData() {
             quest.push(reward);
         }
     }
-    quest.sort(function(a,b) {
+    quest.sort(function(a, b) {
         return a.gte(b);
     });
-    
+
     tp = Decimal(50).minus(totalAS.div(10000).neg().exp().times(49)).plus(outsider[3].multiplier).div(100);
     totalBoss = hze.minus(100).div(5).floor();
     hsCap = hsSacrificed.div(20).times(outsider[4].multiplier.plus(1));
     basePrimalRewards = getBasePrimalRewards(totalBoss);
     var qa = getQA(ancient[3].level.plus(ancient[3].bonusFromRelics), ancient[13].level.plus(ancient[13].bonusFromRelics));
-    output += "QA: " + integerFormat(qa) +"<br>";
+    output += "QA: " + integerFormat(qa) + "<br>";
     output += "Available Quests: " + quest.join(', ');
-    
+
     $("#result1").html(output);
 }
 
@@ -251,11 +251,11 @@ function showResultsAndTests() {
     $("#result3").empty();
     var input = [ancient[13].level, ancient[3].level, 0];
     var input_hs = hs;
-    for (var i=0; i<=quest.length; i++) {
-        $("#result2").append("<b>Quick Ascension #" + (1+i) + " (HS: " + integerFormat(input_hs) + "):</b><br>");
-        $("#result3").append("<b>Tests of Quick Ascension #" + (1+i) + ":</b><br>");
+    for (var i = 0; i <= quest.length; i++) {
+        $("#result2").append("<b>Quick Ascension #" + (1 + i) + " (HS: " + integerFormat(input_hs) + "):</b><br>");
+        $("#result3").append("<b>Tests of Quick Ascension #" + (1 + i) + ":</b><br>");
         input = optimizeQA(input[0], input[1], input_hs);
-        if (i<quest.length)
+        if (i < quest.length)
             input_hs = input[2].times(quest[i]);
         else
             break;
@@ -284,7 +284,7 @@ function loadGame_2() {
     totalAS = Decimal($("#miTotalAS").val());
     output += "Total AS: " + totalAS + "<br>";
     for (var i = 2; i <= 5; i++) {
-        outsider[i].level = Decimal($("#miOsd"+i.toString()).val());
+        outsider[i].level = Decimal($("#miOsd" + i.toString()).val());
         switch (i) {
             case 2:
                 outsider[i].multiplier = Decimal(1).minus(Decimal.pow(0.95, outsider[i].level)).neg();
@@ -306,8 +306,8 @@ function loadGame_2() {
     }
     hs = Decimal($("#miCurrentHS").val());
     for (var i in ancient) {
-        ancient[i].level = Decimal($("#miAcn"+i.toString()).val());
-        ancient[i].bonusFromRelics = Decimal($("#miAcn"+i.toString()+"Relics").val());
+        ancient[i].level = Decimal($("#miAcn" + i.toString()).val());
+        ancient[i].bonusFromRelics = Decimal($("#miAcn" + i.toString() + "Relics").val());
     }
     output += "Hero Souls: " + integerFormat(hs) + "<br>";
     output += "Atman: " + integerFormat(ancient[13].level) + " + " + decimalFormat(ancient[13].bonusFromRelics) + "<br>";
@@ -319,14 +319,14 @@ function loadGame_2() {
 
     //get HS quests
     quest = [];
-    for (var i=0; i<5; i++) {
+    for (var i = 0; i < 5; i++) {
         var temp = $("#miQuest_" + i).val();
         if ($.isNumeric(temp)) {
-            temp=Decimal(temp).div(100);
+            temp = Decimal(temp).div(100);
             quest.push(temp);
         }
     }
-    quest.sort(function(a,b) {
+    quest.sort(function(a, b) {
         return a.gte(b);
     });
 
@@ -351,8 +351,7 @@ function optimizeQA(atman, solomon, hs) {
     if (atman.gte(2880)) {
         bestSolomon = getNewSolomon(solomon, hs);
         bestQA = getQA(bestSolomon.plus(ancient[3].bonusFromRelics), bestAtman.plus(ancient[13].bonusFromRelics));
-    }
-    else {
+    } else {
         for (var i = highestAtman; i.gte(atman); i = i.minus(1)) {
             var newAtman = i;
             var costAtman = Decimal.pow(2, newAtman.plus(1)).minus(Decimal.pow(2, atman.plus(1))).times(Decimal(1).plus(outsider[2].multiplier)).ceil();
@@ -375,14 +374,14 @@ function optimizeQA(atman, solomon, hs) {
 
 $(document).ready(function() {
     $("#slInputType").on('change', function() {
-		var inputType = $(this).val();
-		for (var i = 0; i < 3; i++)
+        var inputType = $(this).val();
+        for (var i = 0; i < 3; i++)
             if (i == inputType)
-                $("#inputMode"+i.toString()).show();
+                $("#inputMode" + i.toString()).show();
             else
-                $("#inputMode"+i.toString()).hide();
-	});
-	$("#buttonLoad").on('click', function() {
+                $("#inputMode" + i.toString()).hide();
+    });
+    $("#buttonLoad").on('click', function() {
         switch (parseInt($("#slInputType").val())) {
             case 0:
                 loadGame_0();
