@@ -91,13 +91,15 @@ function approSum(n) {
 //SUPPORT
 function _decodeSaveGame(sg) {
     var SPLITTER = "Fe12NAfA3R6z4k0z";
+    var zlib = "7a990d405d2c6fb93aa8fbb0ec1a3b23";
     var ipData = sg;
-    if (ipData.indexOf(SPLITTER) > 0) {
-        ipData = ipData.split(SPLITTER)[0];
+    if (ipData.indexOf(SPLITTER) > 0 || ipData.indexOf(zlib) > 0) {
+        ipData = ipData.split(ipData.indexOf(SPLITTER) > 0 ? SPLITTER : zlib)[0];
         var temp = "";
-        for (var i = 0; i < ipData.length; i += 2)
+        for (var i = 0; i < ipData.length; i += 2) {
             temp += ipData[i];
         rawData = JSON.parse(atob(temp));
+        }
     }
 }
 
